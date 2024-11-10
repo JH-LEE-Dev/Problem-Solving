@@ -86,9 +86,6 @@ void func()
 		int col = sticker[0].size();
 		bool applied{ false };
 
-		if (row > N || col > M)
-			rotation(sticker, row, col);
-
 		int sizeRow{ row };
 		int sizeCol{ col };
 
@@ -131,9 +128,6 @@ void func()
 
 			++rotationCount;
 			rotation(tempSticker, row, col);
-
-			if (rowCursor + row > N || colCursor + col > M)
-				rotation(tempSticker, row, col);
 		}
 	}
 
