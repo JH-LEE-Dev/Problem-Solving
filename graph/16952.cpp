@@ -33,309 +33,320 @@ pair<int, int> result{ INF,INF };
 
 bool isValid(pair<int, int> coord)
 {
-    int row{ coord.first };
-    int col{ coord.second };
+	int row{ coord.first };
+	int col{ coord.second };
 
-    if (row >= N || row < 0 || col >= N || col < 0)
-        return false;
-    else
-        return true;
+	if (row >= N || row < 0 || col >= N || col < 0)
+		return false;
+	else
+		return true;
 }
 
 void knightMove(tuple<int, int, int, pair<int, int>, TYPE>& node, bool isChanged)
 {
-    auto coord{ get<3>(node) };
-    auto type{ get<4>(node) };
-    auto curNode{ get<1>(node) };
-    auto curDist{ get<0>(node) };
-    auto curChange{ get<2>(node) };
+	auto coord{ get<3>(node) };
+	auto type{ get<4>(node) };
+	auto curNode{ get<1>(node) };
+	auto curDist{ get<0>(node) };
+	auto curChange{ get<2>(node) };
 
-    int row{ coord.first };
-    int col{ coord.second };
+	int row{ coord.first };
+	int col{ coord.second };
 
-    pair<int, int> curValue{ curDist + 1,curChange };
+	pair<int, int> curValue{ curDist + 1,curChange };
 
-    if (isChanged)
-    {
-        curValue.second += 1;
 
-        if (counting[coord.first][coord.second][KNIGHT][curNode] > curValue)
-        {
-            myPQ.push({ curDist + 1,curNode,curChange + 1 ,coord,KNIGHT });
-            counting[coord.first][coord.second][KNIGHT][curNode] = curValue;
-        }
+	if (isChanged)
+	{
+		curValue.second += 1;
 
-        return;
-    }
+		if (counting[coord.first][coord.second][KNIGHT][curNode] > curValue)
+		{
+			myPQ.push({ curDist + 1,curNode,curChange + 1 ,coord,KNIGHT });
+			counting[coord.first][coord.second][KNIGHT][curNode] = curValue;
+		}
 
-    for (int i{ 0 }; i < 8; ++i)
-    {
-        int nextX{ row + knight_dir_x[i] };
-        int nextY{ col + knight_dir_y[i] };
+		return;
+	}
 
-        if (isValid({ nextX,nextY }))
-        {
-            auto newNode{ curNode };
+	for (int i{ 0 }; i < 8; ++i)
+	{
+		int nextX{ row + knight_dir_x[i] };
+		int nextY{ col + knight_dir_y[i] };
 
-            if (edges[nextX][nextY] == curNode + 1)
-            {
-                newNode += 1;
-            }
+		if (isValid({ nextX,nextY }))
+		{
+			auto newNode{ curNode };
 
-            if (counting[nextX][nextY][KNIGHT][newNode] > curValue)
-            {
-                myPQ.push({ curDist + 1,newNode,curChange ,{nextX,nextY},KNIGHT });
-                counting[nextX][nextY][KNIGHT][newNode] = curValue;
-            }
-        }
-    }
+			if (edges[nextX][nextY] == curNode + 1)
+			{
+				newNode += 1;
+			}
+
+			if (counting[nextX][nextY][KNIGHT][newNode] > curValue)
+			{
+				myPQ.push({ curDist + 1,newNode,curChange ,{nextX,nextY},KNIGHT });
+				counting[nextX][nextY][KNIGHT][newNode] = curValue;
+			}
+		}
+	}
 }
 
 void bishopMove(tuple<int, int, int, pair<int, int>, TYPE>& node, bool isChanged)
 {
-    auto coord{ get<3>(node) };
-    auto type{ get<4>(node) };
-    auto curNode{ get<1>(node) };
-    auto curDist{ get<0>(node) };
-    auto curChange{ get<2>(node) };
+	auto coord{ get<3>(node) };
+	auto type{ get<4>(node) };
+	auto curNode{ get<1>(node) };
+	auto curDist{ get<0>(node) };
+	auto curChange{ get<2>(node) };
 
-    int row{ coord.first };
-    int col{ coord.second };
+	int row{ coord.first };
+	int col{ coord.second };
 
-    int nextX{ row }, nextY{ col };
-    int dirCount{ 0 };
+	int nextX{ row }, nextY{ col };
+	int dirCount{ 0 };
 
-    pair<int, int> curValue{ curDist + 1,curChange };
+	pair<int, int> curValue{ curDist + 1,curChange };
 
-    if (isChanged)
-    {
-        if (counting[coord.first][coord.second][BISHOP][curNode] > curValue)
-        {
-            myPQ.push({ curDist + 1,curNode,curChange + 1 ,coord,BISHOP });
-            counting[coord.first][coord.second][BISHOP][curNode] = curValue;
-        }
+	if (counting[0][2][BISHOP][2].first == 2 && counting[0][2][BISHOP][2].second == 0)
+		int c = 0;
 
-        return;
-    }
+	if (isChanged)
+	{
+		curValue.second += 1;
 
-    while (true)
-    {
-        if (dirCount == 4)
-            break;
+		if (counting[coord.first][coord.second][BISHOP][curNode] > curValue)
+		{
+			myPQ.push({ curDist + 1,curNode,curChange + 1 ,coord,BISHOP });
+			counting[coord.first][coord.second][BISHOP][curNode] = curValue;
+		}
 
-        switch (dirCount)
-        {
-        case 0:
-            nextX -= 1;
-            nextY -= 1;
+		return;
+	}
 
-            break;
-        case 1:
-            nextX += 1;
-            nextY -= 1;
+	while (true)
+	{
+		if (dirCount == 4)
+			break;
 
-            break;
-        case 2:
-            nextX -= 1;
-            nextY += 1;
+		switch (dirCount)
+		{
+		case 0:
+			nextX -= 1;
+			nextY -= 1;
 
-            break;
-        case 3:
-            nextX += 1;
-            nextY += 1;
+			break;
+		case 1:
+			nextX += 1;
+			nextY -= 1;
 
-            break;
-        }
+			break;
+		case 2:
+			nextX -= 1;
+			nextY += 1;
 
-        if (isValid({ nextX,nextY }))
-        {
-            auto newNode{ curNode };
+			break;
+		case 3:
+			nextX += 1;
+			nextY += 1;
 
-            if (edges[nextX][nextY] == curNode + 1)
-            {
-                newNode += 1;
-            }
+			break;
+		}
 
-            if (counting[nextX][nextY][BISHOP][newNode] > curValue)
-            {
-                myPQ.push({ curDist + 1,newNode,curChange ,{nextX,nextY},BISHOP });
-                counting[nextX][nextY][BISHOP][newNode] = curValue;
-            }
-        }
-        else
-        {
-            nextX = row;
-            nextY = col;
+		if (isValid({ nextX,nextY }))
+		{
+			auto newNode{ curNode };
 
-            ++dirCount;
-        }
-    }
+			if (edges[nextX][nextY] == curNode + 1)
+			{
+				newNode += 1;
+			}
+
+			if (counting[nextX][nextY][BISHOP][newNode] > curValue)
+			{
+				myPQ.push({ curDist + 1,newNode,curChange ,{nextX,nextY},BISHOP });
+				counting[nextX][nextY][BISHOP][newNode] = curValue;
+			}
+		}
+		else
+		{
+			nextX = row;
+			nextY = col;
+
+			++dirCount;
+		}
+	}
 }
 
 void rookMove(tuple<int, int, int, pair<int, int>, TYPE>& node, bool isChanged)
 {
-    auto coord{ get<3>(node) };
-    auto type{ get<4>(node) };
-    auto curNode{ get<1>(node) };
-    auto curDist{ get<0>(node) };
-    auto curChange{ get<2>(node) };
+	auto coord{ get<3>(node) };
+	auto type{ get<4>(node) };
+	auto curNode{ get<1>(node) };
+	auto curDist{ get<0>(node) };
+	auto curChange{ get<2>(node) };
 
-    int row{ coord.first };
-    int col{ coord.second };
+	int row{ coord.first };
+	int col{ coord.second };
 
-    int nextX{ row }, nextY{ col };
-    int dirCount{ 0 };
+	int nextX{ row }, nextY{ col };
+	int dirCount{ 0 };
 
-    pair<int, int> curValue{ curDist + 1,curChange };
+	pair<int, int> curValue{ curDist + 1,curChange };
 
-    if (isChanged)
-    {
-        curValue.second += 1;
+	if (isChanged)
+	{
+		curValue.second += 1;
 
-        if (counting[coord.first][coord.second][ROOK][curNode] > curValue)
-        {
-            myPQ.push({ curDist + 1,curNode,curChange + 1 ,coord,ROOK });
-            counting[coord.first][coord.second][ROOK][curNode] = curValue;
-        }
+		if (counting[coord.first][coord.second][ROOK][curNode] > curValue)
+		{
+			myPQ.push({ curDist + 1,curNode,curChange + 1 ,coord,ROOK });
+			counting[coord.first][coord.second][ROOK][curNode] = curValue;
+		}
 
-        return;
-    }
+		return;
+	}
 
-    while (true)
-    {
-        if (dirCount == 4)
-            break;
+	while (true)
+	{
+		if (dirCount == 4)
+			break;
 
-        switch (dirCount)
-        {
-        case 0:
-            nextX -= 1;
+		switch (dirCount)
+		{
+		case 0:
+			nextX -= 1;
 
-            break;
-        case 1:
-            nextY -= 1;
+			break;
+		case 1:
+			nextY -= 1;
 
-            break;
-        case 2:
-            nextY += 1;
+			break;
+		case 2:
+			nextY += 1;
 
-            break;
-        case 3:
-            nextX += 1;
+			break;
+		case 3:
+			nextX += 1;
 
-            break;
-        }
+			break;
+		}
 
-        if (isValid({ nextX,nextY }))
-        {
-            auto newNode{ curNode };
+		if (isValid({ nextX,nextY }))
+		{
+			auto newNode{ curNode };
 
-            if (edges[nextX][nextY] == curNode + 1)
-            {
-                newNode += 1;
-            }
+			if (edges[nextX][nextY] == curNode + 1)
+			{
+				newNode += 1;
+			}
 
-            if (counting[nextX][nextY][ROOK][newNode] > curValue)
-            {
-                myPQ.push({ curDist + 1,newNode,curChange ,{nextX,nextY},ROOK });
-                counting[nextX][nextY][ROOK][newNode] = curValue;
-            }
-        }
-        else
-        {
-            nextX = row;
-            nextY = col;
+			if (counting[nextX][nextY][ROOK][newNode] > curValue)
+			{
+				myPQ.push({ curDist + 1,newNode,curChange ,{nextX,nextY},ROOK });
+				counting[nextX][nextY][ROOK][newNode] = curValue;
+			}
+		}
+		else
+		{
+			nextX = row;
+			nextY = col;
 
-            ++dirCount;
-        }
-    }
+			++dirCount;
+		}
+	}
 }
 
 void nextMove(tuple<int, int, int, pair<int, int>, TYPE>& node)
 {
-    auto coord{ get<3>(node) };
-    auto type{ get<4>(node) };
-    auto curNode{ get<1>(node) };
-    auto curDist{ get<0>(node) };
-    auto curChange{ get<2>(node) };
+	auto coord{ get<3>(node) };
+	auto type{ get<4>(node) };
+	auto curNode{ get<1>(node) };
+	auto curDist{ get<0>(node) };
+	auto curChange{ get<2>(node) };
 
-    if (curNode == N * N)
-    {
-        if (result.first > curDist)
-        {
-            result.first = curDist;
-            result.second = curChange;
-        }
-        else if (result.first == curDist)
-        {
-            result.second = min(result.second, curChange);
-        }
+	pair<int, int> curValue{ curDist,curChange };
 
-        return;
-    }
+	if (curValue > counting[coord.first][coord.second][type][curNode])
+		return;
 
-    switch (type)
-    {
-    case KNIGHT:
-        knightMove(node, false);
-        bishopMove(node, true);
-        rookMove(node, true);
-        break;
-    case BISHOP:
-        knightMove(node, true);
-        bishopMove(node, false);
-        rookMove(node, true);
-        break;
-    case ROOK:
-        knightMove(node, true);
-        bishopMove(node, true);
-        rookMove(node, false);
-        break;
-    }
+	if (curNode == N * N)
+	{
+		if (result.first > curDist)
+		{
+			result.first = curDist;
+			result.second = curChange;
+		}
+		else if (result.first == curDist)
+		{
+			result.second = min(result.second, curChange);
+		}
+
+		return;
+	}
+
+	switch (type)
+	{
+	case KNIGHT:
+		knightMove(node, false);
+		bishopMove(node, true);
+		rookMove(node, true);
+		break;
+	case BISHOP:
+		knightMove(node, true);
+		bishopMove(node, false);
+		rookMove(node, true);
+		break;
+	case ROOK:
+		knightMove(node, true);
+		bishopMove(node, true);
+		rookMove(node, false);
+		break;
+	}
 }
 
 void dijkstra()
 {
-    myPQ.push({ 0,1,0,start,KNIGHT });
-    myPQ.push({ 0,1,0,start,BISHOP });
-    myPQ.push({ 0,1,0,start,ROOK });
-    counting[start.first][start.second][KNIGHT][1] = make_pair(0, 0);
-    counting[start.first][start.second][BISHOP][1] = make_pair(0, 0);
-    counting[start.first][start.second][ROOK][1] = make_pair(0, 0);
+	myPQ.push({ 0,1,0,start,KNIGHT });
+	myPQ.push({ 0,1,0,start,BISHOP });
+	myPQ.push({ 0,1,0,start,ROOK });
+	counting[start.first][start.second][KNIGHT][1] = make_pair(0, 0);
+	counting[start.first][start.second][BISHOP][1] = make_pair(0, 0);
+	counting[start.first][start.second][ROOK][1] = make_pair(0, 0);
 
-    while (myPQ.empty() == false)
-    {
-        auto cur{ myPQ.top() };
-        myPQ.pop();
+	while (myPQ.empty() == false)
+	{
+		auto cur{ myPQ.top() };
+		myPQ.pop();
 
-        nextMove(cur);
-    }
+		nextMove(cur);
+	}
 }
 
 int main()
 {
-    cin.tie(NULL);
-    ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	ios_base::sync_with_stdio(false);
 
-    cin >> N;
+	cin >> N;
 
-    for (int i{ 0 }; i < N; ++i)
-    {
-        for (int j{ 0 }; j < N; ++j)
-        {
-            cin >> edges[i][j];
+	for (int i{ 0 }; i < N; ++i)
+	{
+		for (int j{ 0 }; j < N; ++j)
+		{
+			cin >> edges[i][j];
 
-            if (edges[i][j] == 1)
-            {
-                start.first = i;
-                start.second = j;
-            }
-        }
-    }
+			if (edges[i][j] == 1)
+			{
+				start.first = i;
+				start.second = j;
+			}
+		}
+	}
 
-    dijkstra();
+	dijkstra();
 
-    cout << result.first << ' ' << result.second;
+	cout << result.first << ' ' << result.second;
 
-    return 0;
+	return 0;
 }
