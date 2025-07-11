@@ -19,7 +19,7 @@ using Vertex = tuple<int, int>;
 
 #define endl '\n'
 #define INF numeric_limits<int>::max()
-#define MAX 110
+#define MAX 10'001
 
 int T, N, P, M;
 vector<vector<pair<int, int>>> Edges;
@@ -28,7 +28,7 @@ vector<vector<int>> Dist;
 
 void Input()
 {
-	Dist = vector<vector<int>>(MAX, vector<int>(11, INF));
+	Dist = vector<vector<int>>(MAX, vector<int>(101, INF));
 	Edges = vector<vector<pair<int, int>>>(MAX, vector<pair<int, int>>());
 	Friends.clear();
 
